@@ -21,11 +21,11 @@ Zoom Splash is a clone of animation that was seen in Twitter app. Control allows
 1. Add "splash" module to your project
 2. Add to settings.gradle file:
 
-        include ':splash'
+        include ':zoomsplash'
 
 3. Add to build.gradle main app module file:
 
-        compile project(':splash')
+        compile project(':zoomsplash')
 4. Done!
 
 ##Usage example:
