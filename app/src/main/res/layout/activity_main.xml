@@ -2,16 +2,75 @@
   ~ Copyright © Appus Studio LLC 2009 - 2015
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@android:color/background_light"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
-    <WebView
-        android:id="@+id/web_view"
+    <TextView
+        android:text="First Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
-</RelativeLayout>
+        android:layout_height="48dp" />
+
+    <TextView
+        android:text="Last Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+    <TextView
+        android:text="Email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+    <TextView
+        android:text="Phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+    <TextView
+        android:text="Password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+    <TextView
+        android:text="Repeat password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+    <Button
+        android:text="Sign Up"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

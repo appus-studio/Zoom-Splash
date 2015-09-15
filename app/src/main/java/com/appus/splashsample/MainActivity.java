@@ -16,8 +16,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        WebView webView = (WebView) findViewById(R.id.web_view);
-        webView.loadUrl("https://github.com/roman-voronoy/Appus/blob/master/Splash/readme.md");
         Splash.Builder splash = new Splash.Builder(this, getSupportActionBar());
         splash.perform();
     }
