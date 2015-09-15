@@ -1,7 +1,7 @@
 Appus Splash
 =====================
 
-Appus Splash is a tool that allows to easily create nice Splash animation and attach it to your acyivity.
+Appus Splash is a tool which allows to easily create nice Splash animation and attach it to your activity.
 
 * [Demo](#demo)
 * [Getting Started](#getting-started)
@@ -28,6 +28,20 @@ Appus Splash is a tool that allows to easily create nice Splash animation and at
             splash.perform();
         }
     }
+
+
+##Setup:
+
+1. Add "splash" module to your project
+2. Add to settings.gradle file:
+
+        include ':splash'
+
+3. Add to build.gradle main app module file:
+
+        compile project(':splash')
+4. Done!
+
 
 # Customization
 
