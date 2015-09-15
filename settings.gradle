@@ -2,4 +2,4 @@
  * Copyright © Appus Studio LLC 2009 - 2015
  */
 
-include ':app', ':splash'
+include ':app', ':zoomsplash'
