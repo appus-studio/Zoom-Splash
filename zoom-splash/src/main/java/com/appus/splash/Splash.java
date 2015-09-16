@@ -72,9 +72,13 @@ public class Splash {
         this.mActionBar = actionBar;
         this.mContext = activity.getApplicationContext();
 
-        initScreenSize(activity);
-        replaceRootContent(activity);
-        initViews();
+        if (!hasBeenPerformed) {
+            hasBeenPerformed = isOneShot;
+
+            initScreenSize(activity);
+            replaceRootContent(activity);
+            initViews();
+        }
     }
 
     /**
