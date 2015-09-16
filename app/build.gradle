@@ -30,7 +30,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.0.0'
-//    compile 'com.appus.splash:splash-source:0.1'
-    compile project(':zoomsplash')
+    compile project(':zoom-splash')
 }
 
