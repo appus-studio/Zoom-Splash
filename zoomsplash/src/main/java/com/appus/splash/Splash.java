@@ -65,6 +65,9 @@ public class Splash {
 
     private Context mContext;
 
+    private static boolean isOneShot = true;
+    private static boolean hasBeenPerformed = false;
+
     public Splash(Activity activity, ActionBar actionBar) {
         this.mActionBar = actionBar;
         this.mContext = activity.getApplicationContext();
@@ -205,6 +208,7 @@ public class Splash {
                 super.onAnimationEnd(animation);
                 mSplashContainer.setVisibility(View.GONE);
                 toggleActionbar(true);
+                isOneShot = true;
             }
         });
 
@@ -244,6 +248,12 @@ public class Splash {
      * Method is responsible for performing splash screen
      */
     public void perform() {
+        if (hasBeenPerformed) {
+            return;
+        }
+
+        hasBeenPerformed = isOneShot;
+
         toggleActionbar(false);
         if (mSplashContainer != null) {
             mIvSplash.setOnSizeChangedListener(new ResizeCallbackImageView.OnSizeChangedListener() {
@@ -258,66 +268,46 @@ public class Splash {
                 }
             });
         }
-
     }
 
     public static class Builder {
         private Splash mSplashInstance;
 
-        /**
-         * Create builder for custom splash.
-         * @param activity - Activity context
-         * @param actionBar - Used actionbar. Need to properly hide it during splash.
-         */
         public Builder(Activity activity, ActionBar actionBar) {
             mSplashInstance = new Splash(activity, actionBar);
         }
 
-        /**
-         * Set image, that will be displayed at center of splash.
-         * @param splashImage drawable with picture
-         * @return Builder instance
-         */
         public Builder setSplashImage(Drawable splashImage) {
             mSplashInstance.setSplashImage(splashImage);
             return this;
         }
 
-        /**
-         * Set color of center splash image
-         * @param color Color that will colorify image
-         * @return Builder instance
-         */
         public Builder setSplashImageColor(int color) {
             mSplashInstance.setSplashImageColor(color);
             return this;
         }
 
-        /**
-         * Set color of background behind splash image
-         * @param color splash background color
-         * @return Builder instance
-         */
         public Builder setBackgroundColor(int color) {
             mSplashInstance.setUseColorInSplashBackground(true);
             mSplashInstance.setBackgroundColor(color);
             return this;
         }
 
-        /**
-         *
-         * @param image
-         * @return Builder instance
-         */
         public Builder setBackgroundImage(Drawable image) {
             mSplashInstance.setUseColorInSplashBackground(false);
             mSplashInstance.setBackgroundImage(image);
             return this;
         }
 
-        /**
-         * Run splash animation
-         */
+        public Builder setOneShotStart(boolean isOneShot) {
+            Splash.isOneShot = isOneShot;
+            return this;
+        }
+
+        public Splash create() {
+            return mSplashInstance;
+        }
+
         public void perform() {
             mSplashInstance.perform();
         }
