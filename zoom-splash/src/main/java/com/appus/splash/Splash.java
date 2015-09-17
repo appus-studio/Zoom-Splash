@@ -21,6 +21,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
@@ -45,6 +46,7 @@ public class Splash {
 
     private static final int SCALE_D_DR = 1000;
     private static final int SCALE_UP_DR = 500;
+    private static final int ALPHA_DR = 500;
 
     private static final int DR_FACTOR = 1;
     private ResizeCallbackImageView mIvSplash;
@@ -72,13 +74,9 @@ public class Splash {
         this.mActionBar = actionBar;
         this.mContext = activity.getApplicationContext();
 
-        if (!hasBeenPerformed) {
-            hasBeenPerformed = isOneShot;
-
-            initScreenSize(activity);
-            replaceRootContent(activity);
-            initViews();
-        }
+        initScreenSize(activity);
+        replaceRootContent(activity);
+        initViews();
     }
 
     /**
@@ -115,6 +113,8 @@ public class Splash {
         newContainer.addView(mSplashContainer);
 
         root.addView(newContainer);
+
+        mSplashContainer.setVisibility(View.GONE);
     }
 
     /**
@@ -193,15 +193,19 @@ public class Splash {
         float midH = mIvSplash.getHeight() >> 1;
 
         final ScaleAnimation scaleUpAnim = new ScaleAnimation(U_FROM, U_TO, U_FROM, U_TO, midW, midH);
-        ScaleAnimation scaleDownAnim = new ScaleAnimation(D_FROM, D_TO, D_FROM, D_TO, midW, midH);
+        final ScaleAnimation scaleDownAnim = new ScaleAnimation(D_FROM, D_TO, D_FROM, D_TO, midW, midH);
         final ScaleAnimation frameScaleDownAnim = new ScaleAnimation(D_FROM, U_TO, D_FROM, U_TO, midW, midH);
+        final AlphaAnimation alphaSplashImageAnimation = new AlphaAnimation(1f, 0f);
+
         scaleDownAnim.setDuration(SCALE_D_DR * DR_FACTOR);
         scaleUpAnim.setDuration(SCALE_UP_DR * DR_FACTOR);
         frameScaleDownAnim.setDuration(SCALE_UP_DR * DR_FACTOR);
+
+        alphaSplashImageAnimation.setDuration(ALPHA_DR);
         scaleDownAnim.setAnimationListener(new CAnimatorListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
-                mSplashImageBackground.setVisibility(View.GONE);
+                mSplashImageBackground.startAnimation(alphaSplashImageAnimation);
                 mIvSplash.startAnimation(scaleUpAnim);
             }
         });
@@ -260,6 +264,7 @@ public class Splash {
 
         toggleActionbar(false);
         if (mSplashContainer != null) {
+            mSplashContainer.setVisibility(View.VISIBLE);
             mIvSplash.setOnSizeChangedListener(new ResizeCallbackImageView.OnSizeChangedListener() {
                 @Override
                 public void onSizeChanged(int w, int h, int oldw, int oldh) {
