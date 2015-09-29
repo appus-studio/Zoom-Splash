@@ -39,14 +39,20 @@ public class Splash {
     //U - up
     //DR - duration
 
-    private static final float D_FROM = 1.5f;
+    private static final float D_FROM = 1.2f;
     private static final float D_TO = 1f;
     private static final float U_FROM = 1f;
     private static final float U_TO = 20.0f;
 
-    private static final int SCALE_D_DR = 1000;
-    private static final int SCALE_UP_DR = 500;
-    private static final int ALPHA_DR = 500;
+    private static final int START_OFFSET = 1000;
+
+    private static final int SCALE_D_DR_TYPE_1 = 1000;
+    private static final int SCALE_UP_DR_TYPE_1 = 500;
+    private static final int ALPHA_DR_TYPE_1 = 500;
+
+    private static final int SCALE_D_DR_TYPE_2 = 300;
+    private static final int SCALE_UP_DR_TYPE_2 = 500;
+    private static final int ALPHA_DR_TYPE_2 = 200;
 
     private static final int DR_FACTOR = 1;
     private ResizeCallbackImageView mIvSplash;
@@ -56,7 +62,7 @@ public class Splash {
 
     private Drawable mSplashImage;
     private int mSplashBackgroundColor;
-    private Drawable mSplashBackgroundImage;
+    private Drawable mSplashBackgroundPicture;
 
     private ActionBar mActionBar;
 
@@ -69,6 +75,16 @@ public class Splash {
 
     private static boolean isOneShot = true;
     private static boolean hasBeenPerformed = false;
+
+    private int mPivotXOffset = 0;
+    private int mPivotYOffset = 0;
+
+    public enum AnimationType {
+        TYPE_1,
+        TYPE_2,
+    }
+
+    private AnimationType mAnimationType = AnimationType.TYPE_1;
 
     public Splash(Activity activity, ActionBar actionBar) {
         this.mActionBar = actionBar;
@@ -168,10 +184,10 @@ public class Splash {
         Canvas canvas = new Canvas(result);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        if (useColorInSplashBackground || mSplashBackgroundImage == null) {
+        if (useColorInSplashBackground || mSplashBackgroundPicture == null) {
             canvas.drawColor(mSplashBackgroundColor);
         } else {
-            Bitmap tmpSplashBitmap = ((BitmapDrawable) mSplashBackgroundImage).getBitmap();
+            Bitmap tmpSplashBitmap = ((BitmapDrawable) mSplashBackgroundPicture).getBitmap();
             Bitmap background = ImageUtils.scaleCenterCrop(tmpSplashBitmap, mScreenHeight, mScreenWidth);
             canvas.drawBitmap(background, 0, 0, new Paint());
         }
@@ -181,27 +197,24 @@ public class Splash {
 
         mIvSplash.setImageBitmap(result);
 
-        mIvSplash.setScaleType(ImageView.ScaleType.CENTER);
+        mIvSplash.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
-
 
     /**
      * Starts animations
      */
-    private void startAnimations() {
+    private void startAnimationType1() {
         float midW = mIvSplash.getWidth() >> 1;
         float midH = mIvSplash.getHeight() >> 1;
 
-        final ScaleAnimation scaleUpAnim = new ScaleAnimation(U_FROM, U_TO, U_FROM, U_TO, midW, midH);
+        final ScaleAnimation scaleUpAnim = new ScaleAnimation(U_FROM, U_TO, U_FROM, U_TO, midW + mPivotXOffset, midH + mPivotYOffset);
         final ScaleAnimation scaleDownAnim = new ScaleAnimation(D_FROM, D_TO, D_FROM, D_TO, midW, midH);
-        final ScaleAnimation frameScaleDownAnim = new ScaleAnimation(D_FROM, U_TO, D_FROM, U_TO, midW, midH);
         final AlphaAnimation alphaSplashImageAnimation = new AlphaAnimation(1f, 0f);
 
-        scaleDownAnim.setDuration(SCALE_D_DR * DR_FACTOR);
-        scaleUpAnim.setDuration(SCALE_UP_DR * DR_FACTOR);
-        frameScaleDownAnim.setDuration(SCALE_UP_DR * DR_FACTOR);
+        scaleDownAnim.setDuration(SCALE_D_DR_TYPE_1 * DR_FACTOR);
+        scaleUpAnim.setDuration(SCALE_UP_DR_TYPE_1 * DR_FACTOR);
+        alphaSplashImageAnimation.setDuration(ALPHA_DR_TYPE_1);
 
-        alphaSplashImageAnimation.setDuration(ALPHA_DR);
         scaleDownAnim.setAnimationListener(new CAnimatorListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -220,10 +233,59 @@ public class Splash {
             }
         });
 
-        mIvSplash.setScaleX(D_TO);
-        mIvSplash.setScaleY(D_TO);
+        initSplashSizeBeforeScaleAnim();
 
         mIvSplash.startAnimation(scaleDownAnim);
+    }
+
+    private void startAnimationType2() {
+        float midW = mIvSplash.getWidth() >> 1;
+        float midH = mIvSplash.getHeight() >> 1;
+
+        final ScaleAnimation scaleUpAnim = new ScaleAnimation(U_FROM, U_TO, U_FROM, U_TO, midW + mPivotXOffset, midH + mPivotYOffset);
+        final ScaleAnimation scaleDownAnim = new ScaleAnimation(D_FROM, D_TO, D_FROM, D_TO, midW, midH);
+        final AlphaAnimation alphaSplashImageAnimation = new AlphaAnimation(1f, 0f);
+
+        scaleDownAnim.setDuration(SCALE_D_DR_TYPE_2 * DR_FACTOR);
+        scaleUpAnim.setDuration(SCALE_UP_DR_TYPE_2 * DR_FACTOR);
+        alphaSplashImageAnimation.setDuration(ALPHA_DR_TYPE_2 * DR_FACTOR);
+
+        alphaSplashImageAnimation.setAnimationListener(new CAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mSplashImageBackground.setVisibility(View.GONE);
+
+                initSplashSizeBeforeScaleAnim();
+
+                mIvSplash.startAnimation(scaleDownAnim);
+            }
+        });
+
+        scaleDownAnim.setAnimationListener(new CAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mIvSplash.startAnimation(scaleUpAnim);
+            }
+        });
+
+        scaleUpAnim.setAnimationListener(new CAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mSplashContainer.setVisibility(View.GONE);
+                toggleActionbar(true);
+                isOneShot = true;
+            }
+        });
+
+        mSplashImageBackground.startAnimation(alphaSplashImageAnimation);
+    }
+
+    /**
+     * Should be used before first scale animation for restoring splash scale to normal. Is used for avoiding flashing.
+     * */
+    private void initSplashSizeBeforeScaleAnim() {
+        mIvSplash.setScaleX(D_TO);
+        mIvSplash.setScaleY(D_TO);
     }
 
     private void setSplashImage(Drawable splashImage) {
@@ -243,13 +305,25 @@ public class Splash {
     }
 
     private void setBackgroundImage(Drawable image) {
-        this.mSplashBackgroundImage = image;
+        this.mSplashBackgroundPicture = image;
 
         processMask();
     }
 
+    private void setPivotXOffset(int offset) {
+        this.mPivotXOffset = offset;
+    }
+
+    private void setPivotYOffset(int offset) {
+        this.mPivotYOffset = offset;
+    }
+
     private void setUseColorInSplashBackground(boolean useColorInSplashBackground) {
         this.useColorInSplashBackground = useColorInSplashBackground;
+    }
+
+    private void setAnimationType(AnimationType type) {
+        this.mAnimationType = type;
     }
 
     /**
@@ -271,11 +345,25 @@ public class Splash {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            startAnimations();
+                            startAnimation();
                         }
-                    }, SCALE_D_DR);
+                    }, START_OFFSET);
                 }
             });
+        }
+    }
+
+    /**
+     * Starts specified animation type. If type was not set, then starts default animation (TYPE_1)
+     * */
+    private void startAnimation() {
+        switch (mAnimationType) {
+            case TYPE_1:
+                startAnimationType1();
+                break;
+            case TYPE_2:
+                startAnimationType2();
+                break;
         }
     }
 
@@ -308,8 +396,23 @@ public class Splash {
             return this;
         }
 
+        public Builder setPivotXOffset(int offset) {
+            mSplashInstance.setPivotXOffset(offset);
+            return this;
+        }
+
+        public Builder setPivotYOffset(int offset) {
+            mSplashInstance.setPivotYOffset(offset);
+            return this;
+        }
+
         public Builder setOneShotStart(boolean isOneShot) {
             Splash.isOneShot = isOneShot;
+            return this;
+        }
+
+        public Builder setAnimationType(AnimationType type) {
+            mSplashInstance.setAnimationType(type);
             return this;
         }
 
