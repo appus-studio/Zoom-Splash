@@ -18,17 +18,20 @@ Zoom Splash is a clone of animation that was seen in Twitter app. Control allows
 
 ##Setup:
 
-1. Add repository and dependence to main project's build.gradle:
+1. If you use JCenter repository in your project, just add dependence to main build.gradle:
 
+        dependencies {
+                compile 'pro.appus:zoom-splash:1.0.0'
+        }
+   
+   Else add repository to the same build.gradle:
+   
         repositories {
                 maven {
                         url 'https://dl.bintray.com/roman-voronoy/maven/'
                 }
         }
         
-        dependencies {
-                compile 'pro.appus:zoom-splash:1.0.0'
-        }
         
 2. Done!
 
@@ -69,7 +72,16 @@ Set custom color of splash image:
 
 
         splash.setSplashImageColor(getResources().getColor(R.color.blue));
+        
+        
+Set custom splash pivot:
+        
+        .setPivotXOffset(getResources().getInteger(R.integer.my_x_pivot))
+        .setPivotYOffset(getResources().getInteger(R.integer.my_y_pivot))
 
+Set custom splash animation type:
+
+        .setAnimationType(Splash.AnimationType.TYPE_2)
 
 # Info
 
