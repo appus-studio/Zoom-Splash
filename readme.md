@@ -88,7 +88,7 @@ Set custom splash animation type:
 Developed By
 ------------
 
-* Igor Malytsky, ![Appus Studio](https://appus.software)
+* Igor Malytsky, [Appus Studio](https://appus.software)
 
 License
 --------
