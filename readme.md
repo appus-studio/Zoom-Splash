@@ -1,7 +1,7 @@
 Zoom Splash
 =====================
 
-Made by [![Appus Studio](https://github.com/appus-studio/Appus-Splash/blob/master/image/feather_for_vk100-100.png)](https://appus.software)
+Made in [![Appus Studio](color:#9b59b6)](https://appus.software)
 
 
 Zoom Splash is a clone of animation that was seen in Twitter app. Control allows to easily create a nice splash effect and attach it to your activity. Control customization is also possible.
